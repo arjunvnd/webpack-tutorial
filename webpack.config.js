@@ -10,5 +10,19 @@ module.exports = {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "./deploy"),
   },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env"],
+          },
+        },
+      },
+    ],
+  },
   plugins: [new HTMLWebpackPlugin({ title: "Webpack Output" })],
 };
