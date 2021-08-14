@@ -1,27 +1,63 @@
-const webpack = require('webpack');
-const path = require('path');
- 
+const path = require("path");
+const autoprefixer = require("autoprefixer");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
 module.exports = {
-  entry: path.resolve(__dirname, './src/index.js'),
+  entry: "./src/index.js",
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "bundle.js",
+    chunkFilename: "[id].js",
+    publicPath: "",
+  },
+  resolve: {
+    extensions: [".js", ".jsx"],
+  },
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.js$/,
+        loader: "babel-loader",
         exclude: /node_modules/,
-        use: ['babel-loader'],
+      },
+      {
+        test: /\.css$/,
+        exclude: /node_modules/,
+        use: [
+          { loader: "style-loader" },
+          {
+            loader: "css-loader",
+            options: {
+              modules: {
+                localIdentName: "[name]__[local]___[hash:base64:5]",
+              },
+              sourceMap: true,
+            },
+          },
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: [["autoprefixer", {}]],
+              },
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/,
+        loader: "url-loader",
+        options: {
+          name: "/public/icons/[name].[ext]",
+        },
       },
     ],
   },
-  resolve: {
-    extensions: ['*', '.js', '.jsx'],
-  },
-  output: {
-    path: path.resolve(__dirname, './dist'),
-    filename: 'bundle.js',
-  },
-  plugins: [new webpack.HotModuleReplacementPlugin()],
-  devServer: {
-    contentBase: path.resolve(__dirname, './dist'),
-    hot: true,
-  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: __dirname + "/src/index.html",
+      filename: "index.html",
+      inject: "body",
+    }),
+  ],
 };
