@@ -60,4 +60,9 @@ module.exports = {
       inject: "body",
     }),
   ],
+  devServer: {
+    port: 3000,
+    watchContentBase: true,
+  },
+  devtool: "source-map",
 };
